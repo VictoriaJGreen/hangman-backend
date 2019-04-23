@@ -93,13 +93,16 @@ const sendToEveryone = function incoming(data) {
   console.log("json data", clientData);
   if (clientData.type == "letterGuess") {
     compareLetterToWord(clientData);
-  } else if (clientData == "reset") {
-    playerOne.send("reset");
-    if (playerTwo != null) {
-      playerTwo.send("reset");
+  } else if (clientData.type == "reset") {
+    if (playerOne != null && playerOne.readyState == WebSocket.OPEN) {
+      playerOne.send(JSON.stringify({ type: "reset" }));
+      playerOne.close();
     }
-    playerOne.close();
-    playerTwo.close();
+
+    if (playerTwo != null && playerTwo.readyState == WebSocket.OPEN) {
+      playerTwo.send(JSON.stringify({ type: "reset" }));
+      playerTwo.close();
+    }
   }
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
