@@ -93,6 +93,13 @@ const sendToEveryone = function incoming(data) {
   console.log("json data", clientData);
   if (clientData.type == "letterGuess") {
     compareLetterToWord(clientData);
+  } else if (clientData == "reset") {
+    playerOne.send("reset");
+    if (playerTwo != null) {
+      playerTwo.send("reset");
+    }
+    playerOne = null;
+    playerTwo = null;
   }
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
