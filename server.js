@@ -98,8 +98,8 @@ const sendToEveryone = function incoming(data) {
     if (playerTwo != null) {
       playerTwo.send("reset");
     }
-    playerOne = null;
-    playerTwo = null;
+    playerOne.close();
+    playerTwo.close();
   }
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
@@ -135,7 +135,7 @@ function sendMagicWordToPlayers() {
 
 // When client connects to the server
 wss.on('connection', function connection(ws) {
-  if (playerOne == null) {
+  if (playerOne == null || playerOne.readyState === WebSocket.CLOSED) {
     console.log("Setting Player 1");
     playerOne = ws;
     // During an instance where the ws for player One gets
@@ -148,7 +148,7 @@ wss.on('connection', function connection(ws) {
     };
     playerOne.send(JSON.stringify(playerInformation));
     
-  } else if (playerTwo == null) {
+  } else if (playerTwo == null || playerTwo.readyState === WebSocket.CLOSED) {
     console.log("Setting Player 2");
     playerTwo = ws;
     // During an instance where the ws for Player Two gets
